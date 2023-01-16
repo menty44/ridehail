@@ -7,24 +7,23 @@ import configuration from './config/configuration';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { Users } from './database/entities/users.entity';
 import { UsersModule } from './users/users.module';
+import { UsersController } from './controller/users.controller';
+import { DriveerModule } from './driveer/driveer.module';
 
 @Module({
   imports: [
-    ConfigModule.forRoot({
-      isGlobal: true,
-      load: [configuration],
-    }),
-    TypeOrmModule.forRootAsync({
-      imports: [ConfigModule],
-      useFactory: (configService: ConfigService) => ({
-        type: 'postgres',
-        url: configService.get('database.postgres'),
-        entities: [Users],
-        synchronize: true,
-      }),
-      inject: [ConfigService],
+    TypeOrmModule.forRoot({
+      type: 'postgres',
+      host: 'localhost',
+      port: 5432,
+      username: 'postgres',
+      password: '',
+      database: 'ridehail',
+      entities: [__dirname + '/**/*.entity{.ts,.js}'],
+      synchronize: true,
     }),
     UsersModule,
+    DriveerModule,
   ],
   controllers: [AppController],
   providers: [AppService, ConfigService],
